@@ -1,17 +1,26 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
-import { X, Tag } from "lucide-react"
+import { X, Tag, Maximize2, ExternalLink } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogClose
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Splide, SplideSlide } from '@splidejs/react-splide';
+import '@splidejs/react-splide/css';
+
+// Add custom styles to hide Splide navigation
+const splideStyles = `
+  .splide__arrows,
+  .splide__pagination {
+    display: none !important;
+  }
+  .splide__track {
+    padding: 0 !important;
+  }
+`;
 
 interface Project {
   id: number
@@ -31,18 +40,18 @@ const rawProjects: Project[] = [
     category: "Character Art",
     description: "A futuristic character design created for a AAA game project.",
     tags: ["Character Modeling", "Texturing", "Rigging"],
-    images: ["https://images.unsplash.com/photo-1599148400620-8e1ff0bf28d8?q=80&w=800"]
+    images: ["https://images.unsplash.com/photo-1599148400620-8e1ff0bf28d8?q=80&w=800"],
   },
- 
-   {
+
+  {
     id: 1,
     title: "Sci-Fi Character Design",
     category: "Character Art",
     description: "A futuristic character design created for a AAA game project.",
     tags: ["Character Modeling", "Texturing", "Rigging"],
-    images: ["https://images.unsplash.com/photo-1599148400620-8e1ff0bf28d8?q=80&w=800"]
+    images: ["https://images.unsplash.com/photo-1599148400620-8e1ff0bf28d8?q=80&w=800"],
   },
- 
+
   {
     id: 2,
     title: "Ultimate Showcase",
@@ -50,37 +59,127 @@ const rawProjects: Project[] = [
     description: "A comprehensive project showing off 3D renders, animations, and product reels.",
     tags: ["3D", "Motion", "Product", "Mixed Media"],
     images: ["https://images.unsplash.com/photo-1617791160505-6f00504e3519?q=80&w=800", "/images/0.png"],
-    videos: ["/video.mp4", "/video.mp4"]
+    videos: ["/video.mp4", "/video.mp4"],
   },
   {
     id: 3,
-    title: "Product Animation",
+    title: "RFID-Enabled Telephone ",
     category: "Product Viz",
     description: "Dynamic product animation of a high-end consumer electronics device.",
-    tags: ["Animation", "Product Design", "Lighting"],
-    images: ["/images/0.png", "/images/2.png"],
-    videos: ["/video.mp4"]
+    tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting" , "Realistic Rendering"],
+    images: ["/images/itele0.png", "/images/itele1.png"],
+    videos: ["/videos/tele.v.mp4"],
   },
- 
+  {
+    id: 4,
+    title: "Smart Fingerprint Scanner",
+    category: "Product Viz",
+    description: "A modern biometric security device with realistic materials and lighting.",
+    tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting", "Realistic Rendering"],
+    images: ["/images/ivmetrix0.png", "/images/ivmetrix1.png"],
+    videos: ["/videos/vvmetrix0.mp4"],
+  },
+  {
+    id: 5,
+    title: "Premium Bluetooth Speaker",
+    category: "Product Viz",
+    description: "High-end wireless speaker with detailed material work and dynamic lighting.",
+    tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting", "Realistic Rendering"],
+    images: ["/images/ispeaker0.png", "/images/ispeaker1.png"],
+    videos: ["/videos/vspeaker0.mp4"],
+  },
+  {
+    id: 6,
+    title: "Luxury Sneaker Design",
+    category: "Product Viz",
+    description: "Detailed 3D visualization of a premium athletic shoe with realistic materials.",
+    tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting", "Realistic Rendering"],
+    images: ["/images/2.png", "/images/shoes1.png"],
+    videos: ["/videos/shoes.mp4"],
+  },
+  {
+    id: 7,
+    title: "Fantasy Game World",
+    category: "Environment",
+    description: "A vibrant fantasy game environment with stylized architecture and magical elements.",
+    tags: ["Environment Design", "Game Art", "Stylized Modeling", "Texturing", "Lighting"],
+    images: ["/images/ienv0.png", "/images/game_env1.png"],
+    videos: ["/videos/game_env.mp4"],
+  },
+  {
+    id: 8,
+    title: "Cyberpunk Cityscape",
+    category: "Environment",
+    description: "A detailed cyberpunk city environment with neon lights and futuristic architecture.",
+    tags: ["Environment Design", "Game Art", "Stylized Modeling", "Texturing", "Lighting"],
+    images: ["/images/cyberpunk0.png", "/images/cyberpunk1.png"],
+    videos: ["/videos/cyberpunk.mp4"],
+  },
+  {
+    id: 9,
+    title: "Realistic Forest Scene",
+    category: "Environment",
+    description: "A photorealistic forest environment with detailed vegetation and atmospheric lighting.",
+    tags: ["Environment Design", "Realistic Modeling", "Texturing", "Lighting", "Photorealistic"],
+    images: ["/images/forest0.png", "/images/forest1.png"],
+    videos: ["/videos/forest.mp4"],
+  },
+  {
+    id: 10,
+    title: "Modern Urban Landscape",
+    category: "Environment",
+    description: "A highly detailed urban environment with realistic architecture and materials.",
+    tags: ["Environment Design", "Realistic Modeling", "Texturing", "Lighting", "Photorealistic"],
+    images: ["/images/urban0.png", "/images/urban1.png"],
+    videos: ["/videos/urban.mp4"],
+  },
+  {
+    id: 11,
+    title: "Realistic Banner Animation",
+    category: "CGI Animation",
+    description: "A photorealistic banner animation showcasing dynamic cloth simulation and realistic lighting effects.",
+    tags: ["Cloth Simulation", "Animation", "Realistic Rendering", "Motion Graphics", "Lighting"],
+    images: ["/images/iheli1.png", "/images/iheli0.png"],
+    videos: ["/videos/vheli0.mp4"],
+  },
+  {
+    id: 12,
+    title: "CGI Shoe Animation",
+    category: "CGI Animation",
+    description: "A dynamic shoe animation featuring detailed material work, motion graphics, and cinematic camera movements.",
+    tags: ["Product Animation", "Motion Graphics", "Cinematic", "Material Design", "Camera Animation"],
+    images: ["/images/cgi_shoe0.png", "/images/cgi_shoe1.png"],
+    videos: ["/videos/cgi_shoe.mp4"],
+  },
 ]
 
 // Remove duplicates by ID
-const projects: Project[] = Array.from(
-  new Map(rawProjects.map((proj) => [proj.id, proj])).values()
-)
+const projects: Project[] = Array.from(new Map(rawProjects.map((proj) => [proj.id, proj])).values())
 
 const categories = ["All", ...Array.from(new Set(projects.map((p) => p.category)))]
 
 export function Portfolio() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
+  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
+  const [showAll, setShowAll] = useState(false)
 
-  const filteredProjects = selectedCategory === "All"
-    ? projects
-    : projects.filter((project) => project.category === selectedCategory)
+  const filteredProjects =
+    selectedCategory === "All" ? projects : projects.filter((project) => project.category === selectedCategory)
+
+  // Calculate initial display count (2 rows * 3 columns = 6 items)
+  const initialDisplayCount = 6
+  const displayedProjects = showAll ? filteredProjects : filteredProjects.slice(0, initialDisplayCount)
+
+  // Function to open fullscreen image
+  const openFullscreen = (imageSrc: string, e: React.MouseEvent) => {
+    e.stopPropagation() // Prevent triggering the project dialog
+    setFullscreenImage(imageSrc)
+  }
 
   return (
     <section className="py-20" id="portfolio">
+      <style>{splideStyles}</style>
       <div className="container mx-auto px-6">
         <h2 className="text-4xl font-bold text-center mb-8">Portfolio</h2>
 
@@ -90,7 +189,10 @@ export function Portfolio() {
             <Button
               key={category}
               variant={selectedCategory === category ? "default" : "outline"}
-              onClick={() => setSelectedCategory(category)}
+              onClick={() => {
+                setSelectedCategory(category)
+                setShowAll(false) // Reset show all when changing category
+              }}
               className="px-6 py-2 rounded-full"
             >
               {category}
@@ -100,27 +202,38 @@ export function Portfolio() {
 
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project) => (
+          {displayedProjects.map((project) => (
             <Card
               key={project.id}
-              className="group relative overflow-hidden rounded-lg cursor-pointer border-0 p-0"
+              className="group relative overflow-hidden rounded-lg cursor-pointer border-0 p-0 h-[300px]"
               onClick={() => setSelectedProject(project)}
             >
-              <CardContent className="p-0">
-                <img
-                  src={project.images?.[0] || "/placeholder.svg"}
-                  alt={project.title}
-                  className="w-full h-64 object-cover transition duration-300 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
-                  <h3 className="text-xl font-semibold text-white">{project.title}</h3>
-                  <p className="text-white/70">{project.category}</p>
-                  <div className="flex gap-2 mt-2">
-                    {project.tags.slice(0, 2).map((tag) => (
-                      <Badge key={tag} variant="secondary" className="bg-white/20 text-white">
-                        {tag}
-                      </Badge>
-                    ))}
+              <CardContent className="p-0 h-full">
+                <div className="relative h-full">
+                  <img
+                    src={project.images?.[0] || "/placeholder.svg"}
+                    alt={project.title}
+                    className="w-full h-full object-cover object-[center_40%] transition duration-300 group-hover:scale-110"
+                  />
+                  {/* Fullscreen button */}
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                    onClick={(e) => openFullscreen(project.images?.[0] || "", e)}
+                  >
+                    <Maximize2 className="w-5 h-5" />
+                  </Button>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 z-10">
+                    <h3 className="text-xl font-semibold text-white">{project.title}</h3>
+                    <p className="text-white/70">{project.category}</p>
+                    <div className="flex gap-2 mt-2">
+                      {project.tags.slice(0, 2).map((tag) => (
+                        <Badge key={tag} variant="secondary" className="bg-white/20 text-white">
+                          {tag}
+                        </Badge>
+                      ))}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -128,14 +241,25 @@ export function Portfolio() {
           ))}
         </div>
 
-        {/* Modal */}
+        {/* Show More Button */}
+        {filteredProjects.length > initialDisplayCount && (
+          <div className="flex justify-center mt-12">
+            <Button
+              variant="outline"
+              onClick={() => setShowAll(!showAll)}
+              className="px-8 py-2 rounded-full"
+            >
+              {showAll ? "Show Less" : "Show More"}
+            </Button>
+          </div>
+        )}
+
+        {/* Project Modal */}
         <Dialog open={!!selectedProject} onOpenChange={(open) => !open && setSelectedProject(null)}>
           <DialogContent className="max-w-4xl bg-card">
             <DialogHeader>
               <DialogTitle className="text-2xl font-bold">{selectedProject?.title}</DialogTitle>
-              <DialogClose className="absolute right-4 top-4">
-                <X className="h-4 w-4" />
-              </DialogClose>
+              <DialogClose className="absolute right-4 top-4" />
             </DialogHeader>
 
             {selectedProject && (
@@ -143,23 +267,31 @@ export function Portfolio() {
                 {/* Media Preview */}
                 <div className="grid md:grid-cols-2 gap-4">
                   {selectedProject.images?.map((image, i) => (
-                    <img
-                      key={`img-${i}`}
-                      src={image}
-                      alt={`Image ${i + 1}`}
-                      className="w-full h-64 object-cover rounded-lg"
-                    />
+                    <div key={`img-${i}`} className="relative group">
+                      <img
+                        src={image || "/placeholder.svg"}
+                        alt={`Image ${i + 1}`}
+                        className="w-full h-64 object-cover rounded-lg"
+                      />
+                      {/* Fullscreen button */}
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => setFullscreenImage(image)}
+                      >
+                        <Maximize2 className="w-5 h-5" />
+                      </Button>
+                    </div>
                   ))}
 
                   {selectedProject.videos?.map((video, i) => (
-                    <video
-                      key={`vid-${i}`}
-                      controls
-                      className="w-full h-64 object-cover rounded-lg"
-                    >
-                      <source src={video} type="video/mp4" />
-                      Your browser does not support the video tag.
-                    </video>
+                    <div key={`vid-${i}`} className="w-full aspect-video">
+                      <video controls className="w-full h-full object-contain rounded-lg">
+                        <source src={video} type="video/mp4" />
+                        Your browser does not support the video tag.
+                      </video>
+                    </div>
                   ))}
                 </div>
 
@@ -183,6 +315,32 @@ export function Portfolio() {
                 </div>
               </div>
             )}
+          </DialogContent>
+        </Dialog>
+
+        {/* Fullscreen Image Modal */}
+        <Dialog open={!!fullscreenImage} onOpenChange={(open) => !open && setFullscreenImage(null)}>
+          <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden bg-black/90">
+            <div className="relative w-full h-full flex items-center justify-center">
+              <img
+                src={fullscreenImage || ""}
+                alt="Fullscreen view"
+                className="max-w-full max-h-[90vh] object-contain"
+              />
+              <DialogClose className="absolute right-4 top-4 text-white hover:text-gray-300" />
+
+              {/* Optional: Add external link button */}
+              {fullscreenImage && (
+                <a
+                  href={fullscreenImage}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute bottom-4 right-4 bg-white/10 p-2 rounded-full hover:bg-white/20 transition-colors"
+                >
+                  <ExternalLink className="h-5 w-5 text-white" />
+                </a>
+              )}
+            </div>
           </DialogContent>
         </Dialog>
       </div>

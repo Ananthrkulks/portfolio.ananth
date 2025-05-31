@@ -1,9 +1,10 @@
-import { Github, Linkedin, Twitter } from "lucide-react"
+import { Github, Linkedin } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { FileText } from "lucide-react"
 import { ResumeContent } from "./resume-content"
+import Link from "next/link"
 
 export function About() {
   return (
@@ -64,18 +65,13 @@ export function About() {
             </div>
             <div className="flex gap-4">
               <Button variant="outline" size="icon" asChild>
-                <a href="#" aria-label="GitHub">
+                <a href="https://github.com/Ananthrkulks" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
                   <Github className="w-5 h-5" />
                 </a>
               </Button>
               <Button variant="outline" size="icon" asChild>
-                <a href="#" aria-label="LinkedIn">
+                <a href="https://www.linkedin.com/in/ananthrkulkarni/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
                   <Linkedin className="w-5 h-5" />
-                </a>
-              </Button>
-              <Button variant="outline" size="icon" asChild>
-                <a href="#" aria-label="Twitter">
-                  <Twitter className="w-5 h-5" />
                 </a>
               </Button>
 
@@ -93,6 +89,12 @@ export function About() {
                   <ResumeContent />
                 </DialogContent>
               </Dialog>
+
+              <Button asChild>
+                <Link href="/know-more" className="gap-2">
+                  Know More
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

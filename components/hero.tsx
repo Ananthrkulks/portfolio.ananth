@@ -22,16 +22,48 @@ export function Hero() {
     },
     {
       title: "Motion Graphics",
-      type: "video",
-      src: "/videos/8.mp4",
-      index: 0,
+      type: "image",
+      src: "/images/3.png",
+      // index: 0,
     },
     {
       title: "Visual Effects",
-      type: "video",
-      src: "/videos/9.mp4",
-      index: 1,
+      type: "image",
+      src: "/images/4.png",
+      // index: 1,
     },
+    {
+      title: "Visual Effects",
+      type: "image",
+      src: "/images/5.png",
+      // index: 1,
+    },
+    {
+      title: "Visual Effects",
+      type: "image",
+      src: "/images/6.jpg",
+      // index: 1,
+    },
+    {
+      title: "Visual Effects",
+      type: "image",
+      src: "/images/7.png",
+      // index: 1,
+    },
+    {
+      title: "Visual Effects",
+      type: "image",
+      src: "/images/8.png",
+      // index: 1,
+    },
+    {
+      title: "3D Animation",
+      type: "video",
+      src: "/videos/tele.v.mp4",
+      index: 0,
+      },
+      
+      
   ]
 
   // Handle rotation of background media
