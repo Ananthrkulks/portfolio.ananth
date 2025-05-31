@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useState } from "react"
-import { X, Tag, Maximize2, ExternalLink } from "lucide-react"
+import { X, Tag, Maximize2, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
@@ -11,14 +11,48 @@ import { Button } from "@/components/ui/button"
 import { Splide, SplideSlide } from '@splidejs/react-splide';
 import '@splidejs/react-splide/css';
 
-// Add custom styles to hide Splide navigation
+// Update custom arrow styles
 const splideStyles = `
-  .splide__arrows,
   .splide__pagination {
     display: none !important;
   }
   .splide__track {
     padding: 0 !important;
+  }
+  .splide__arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    opacity: 0.8;
+  }
+  .splide__arrow:hover {
+    background: rgba(255, 255, 255, 0.3);
+    opacity: 1;
+  }
+  .splide__arrow--prev {
+    left: 0.5rem;
+  }
+  .splide__arrow--next {
+    right: 0.5rem;
+  }
+  .splide__arrow svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: white;
+  }
+  .splide__arrow svg path {
+    fill: white;
   }
 `;
 
@@ -266,33 +300,142 @@ export function Portfolio() {
               <div className="p-0 space-y-6">
                 {/* Media Preview */}
                 <div className="grid md:grid-cols-2 gap-4">
-                  {selectedProject.images?.map((image, i) => (
-                    <div key={`img-${i}`} className="relative group">
-                      <img
-                        src={image || "/placeholder.svg"}
-                        alt={`Image ${i + 1}`}
-                        className="w-full h-64 object-cover rounded-lg"
-                      />
-                      {/* Fullscreen button */}
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => setFullscreenImage(image)}
+                  {/* First Image Carousel */}
+                  {selectedProject.images && selectedProject.images.length > 0 && (
+                    <div className="w-full relative">
+                      <Splide
+                        options={{
+                          type: 'loop',
+                          perPage: 1,
+                          perMove: 1,
+                          gap: '1rem',
+                          pagination: false,
+                          arrows: true,
+                          autoplay: true,
+                          interval: 3000,
+                          pauseOnHover: true,
+                          classes: {
+                            arrows: 'splide__arrows',
+                            arrow: 'splide__arrow',
+                            prev: 'splide__arrow--prev',
+                            next: 'splide__arrow--next',
+                          },
+                          start: 0,
+                        }}
                       >
-                        <Maximize2 className="w-5 h-5" />
-                      </Button>
+                        {selectedProject.images.slice(0, Math.ceil(selectedProject.images.length / 2)).map((image, i) => (
+                          <SplideSlide key={`img-${i}`}>
+                            <div className="relative group aspect-[4/3]">
+                              <img
+                                src={image || "/placeholder.svg"}
+                                alt={`Image ${i + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => setFullscreenImage(image)}
+                              >
+                                <Maximize2 className="w-5 h-5" />
+                              </Button>
+                            </div>
+                          </SplideSlide>
+                        ))}
+                      </Splide>
                     </div>
-                  ))}
+                  )}
 
-                  {selectedProject.videos?.map((video, i) => (
-                    <div key={`vid-${i}`} className="w-full aspect-video">
-                      <video controls className="w-full h-full object-contain rounded-lg">
-                        <source src={video} type="video/mp4" />
-                        Your browser does not support the video tag.
-                      </video>
+                  {/* Second Image Carousel */}
+                  {selectedProject.images && selectedProject.images.length > 0 && (
+                    <div className="w-full relative">
+                      <Splide
+                        options={{
+                          type: 'loop',
+                          perPage: 1,
+                          perMove: 1,
+                          gap: '1rem',
+                          pagination: false,
+                          arrows: true,
+                          autoplay: true,
+                          interval: 3000,
+                          pauseOnHover: true,
+                          classes: {
+                            arrows: 'splide__arrows',
+                            arrow: 'splide__arrow',
+                            prev: 'splide__arrow--prev',
+                            next: 'splide__arrow--next',
+                          },
+                          start: 0,
+                        }}
+                      >
+                        {selectedProject.images.slice(Math.ceil(selectedProject.images.length / 2)).map((image, i) => (
+                          <SplideSlide key={`img2-${i}`}>
+                            <div className="relative group aspect-[4/3]">
+                              <img
+                                src={image || "/placeholder.svg"}
+                                alt={`Image ${i + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => setFullscreenImage(image)}
+                              >
+                                <Maximize2 className="w-5 h-5" />
+                              </Button>
+                            </div>
+                          </SplideSlide>
+                        ))}
+                      </Splide>
                     </div>
-                  ))}
+                  )}
+
+                  {/* Video Carousel */}
+                  {selectedProject.videos && selectedProject.videos.length > 0 && (
+                    <div className="w-full relative">
+                      <Splide
+                        options={{
+                          type: 'loop',
+                          perPage: 1,
+                          perMove: 1,
+                          gap: '1rem',
+                          pagination: false,
+                          arrows: true,
+                          autoplay: false,
+                          pauseOnHover: true,
+                          classes: {
+                            arrows: 'splide__arrows',
+                            arrow: 'splide__arrow',
+                            prev: 'splide__arrow--prev',
+                            next: 'splide__arrow--next',
+                          },
+                          start: 0,
+                        }}
+                      >
+                        {selectedProject.videos.map((video, i) => (
+                          <SplideSlide key={`vid-${i}`}>
+                            <div className="w-full aspect-video">
+                              <video 
+                                controls 
+                                className="w-full h-full object-contain rounded-lg"
+                                onPlay={(e) => {
+                                  const videos = document.querySelectorAll('video');
+                                  videos.forEach((v) => {
+                                    if (v !== e.currentTarget) v.pause();
+                                  });
+                                }}
+                              >
+                                <source src={video} type="video/mp4" />
+                                Your browser does not support the video tag.
+                              </video>
+                            </div>
+                          </SplideSlide>
+                        ))}
+                      </Splide>
+                    </div>
+                  )}
                 </div>
 
                 {/* Description */}
