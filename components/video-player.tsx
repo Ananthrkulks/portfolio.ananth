@@ -19,15 +19,29 @@ export function VideoPlayer({ src, poster, className }: VideoPlayerProps) {
   }
 
   return (
-    <video
-      ref={videoRef}
-      src={src}
-      className={className}
-      controls
-      preload="metadata"
-      playsInline
-      poster={poster}
-      onError={handleError}
-    />
+    <div className="relative w-full aspect-video bg-black/90">
+      <video
+        ref={videoRef}
+        src={src}
+        className={`w-full h-full object-contain ${className}`}
+        controls
+        preload="metadata"
+        playsInline
+        poster={poster}
+        onError={handleError}
+        onPlay={(e) => {
+          const videos = document.querySelectorAll('video');
+          videos.forEach((v) => {
+            if (v !== e.currentTarget) {
+              v.pause();
+              v.currentTime = 0;
+            }
+          });
+        }}
+        onPause={(e) => {
+          e.currentTarget.currentTime = 0;
+        }}
+      />
+    </div>
   )
 } 

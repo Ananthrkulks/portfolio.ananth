@@ -58,11 +58,13 @@ export default function KnowMore() {
             <div className="grid md:grid-cols-2 gap-8">
               {/* Speaker Project */}
               <article className="bg-card rounded-lg overflow-hidden shadow-lg">
-                <VideoPlayer 
-                  src="/videos/vspeaker0.mp4" 
-                  className="w-full h-64 object-cover"
-                  poster="/images/ispeaker0.png"
-                />
+                <div className="aspect-video">
+                  <VideoPlayer 
+                    src="/videos/vspeaker0.mp4" 
+                    className="w-full h-full"
+                    poster="/images/ispeaker0.png"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">Speaker Design Project</h3>
                   <p className="text-muted-foreground mb-4">
@@ -77,11 +79,13 @@ export default function KnowMore() {
 
               {/* Helicopter Project */}
               <article className="bg-card rounded-lg overflow-hidden shadow-lg">
-                <VideoPlayer 
-                  src="/videos/vheli0.mp4" 
-                  className="w-full h-64 object-cover"
-                  poster="/images/iheli0.png"
-                />
+                <div className="aspect-video">
+                  <VideoPlayer 
+                    src="/videos/vheli0.mp4" 
+                    className="w-full h-full"
+                    poster="/images/iheli0.png"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">Helicopter Animation</h3>
                   <p className="text-muted-foreground mb-4">
@@ -102,11 +106,13 @@ export default function KnowMore() {
             <div className="grid md:grid-cols-3 gap-8">
               {/* VMetrix Project */}
               <div className="bg-card rounded-lg overflow-hidden shadow-lg">
-                <VideoPlayer 
-                  src="/videos/vvmetrix0.mp4" 
-                  className="w-full h-48 object-cover"
-                  poster="/images/ivmetrix0.png"
-                />
+                <div className="aspect-video">
+                  <VideoPlayer 
+                    src="/videos/vvmetrix0.mp4" 
+                    className="w-full h-full"
+                    poster="/images/ivmetrix0.png"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-4">VMetrix Project</h3>
                   <p className="text-muted-foreground">
@@ -117,11 +123,13 @@ export default function KnowMore() {
 
               {/* Tele Project */}
               <div className="bg-card rounded-lg overflow-hidden shadow-lg">
-                <VideoPlayer 
-                  src="/videos/tele.v.mp4" 
-                  className="w-full h-48 object-cover"
-                  poster="/images/itele0.png"
-                />
+                <div className="aspect-video">
+                  <VideoPlayer 
+                    src="/videos/tele.v.mp4" 
+                    className="w-full h-full"
+                    poster="/images/itele0.png"
+                  />
+                </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-4">Tele Project</h3>
                   <p className="text-muted-foreground">

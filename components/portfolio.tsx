@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { X, Tag, Maximize2, ExternalLink, ChevronLeft, ChevronRight } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog"
@@ -26,8 +26,8 @@ const splideStyles = `
     z-index: 10;
     background: rgba(255, 255, 255, 0.2);
     color: white;
-    width: 3rem;
-    height: 3rem;
+    width: 2rem;
+    height: 2rem;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -41,14 +41,14 @@ const splideStyles = `
     opacity: 1;
   }
   .splide__arrow--prev {
-    left: 0.5rem;
+    left: 0.25rem;
   }
   .splide__arrow--next {
-    right: 0.5rem;
+    right: 0.25rem;
   }
   .splide__arrow svg {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1rem;
+    height: 1rem;
     fill: white;
   }
   .splide__arrow svg path {
@@ -64,6 +64,10 @@ interface Project {
   tags: string[]
   images?: string[]
   videos?: string[]
+  secondImages?: string[]
+  thirdImages?: string[]
+  fourthImages?: string[]
+  secondVideos?: string[]
 }
 
 // Raw projects with duplicates
@@ -74,26 +78,25 @@ const rawProjects: Project[] = [
     category: "Character Art",
     description: "A futuristic character design created for a AAA game project.",
     tags: ["Character Modeling", "Texturing", "Rigging"],
-    images: ["https://images.unsplash.com/photo-1599148400620-8e1ff0bf28d8?q=80&w=800"],
+    images: ["/images/ienv0.png", "/images/iheli0.png", "/images/itele0.png"],
+    secondImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
+    thirdImages: ["/images/itele0.png", "/images/iheli0.png", "/images/ienv0.png"],
+    fourthImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
+    videos: ["/videos/tele.v.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
-
-  {
-    id: 1,
-    title: "Sci-Fi Character Design",
-    category: "Character Art",
-    description: "A futuristic character design created for a AAA game project.",
-    tags: ["Character Modeling", "Texturing", "Rigging"],
-    images: ["https://images.unsplash.com/photo-1599148400620-8e1ff0bf28d8?q=80&w=800"],
-  },
-
   {
     id: 2,
     title: "Ultimate Showcase",
     category: "Mixed Media",
     description: "A comprehensive project showing off 3D renders, animations, and product reels.",
     tags: ["3D", "Motion", "Product", "Mixed Media"],
-    images: ["https://images.unsplash.com/photo-1617791160505-6f00504e3519?q=80&w=800", "/images/0.png"],
-    videos: ["/video.mp4", "/video.mp4"],
+    images: ["/images/ienv0.png", "/images/iheli0.png", "/images/itele0.png"],
+    secondImages: ["/images/0.png", "/images/iheli1.png", "/images/itele1.png"],
+    thirdImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele1.png", "/images/iheli1.png", "/images/itele0.png"],
+    videos: ["/video.mp4"],
+    secondVideos: ["/video.mp4"],
   },
   {
     id: 3,
@@ -101,7 +104,10 @@ const rawProjects: Project[] = [
     category: "Product Viz",
     description: "Dynamic product animation of a high-end consumer electronics device.",
     tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting" , "Realistic Rendering"],
-    images: ["/images/itele0.png", "/images/itele1.png"],
+    images: ["/images/itele0.png", "/images/8.png", "/images/ienv0.png"],
+    secondImages: ["/images/itele1.png", "/images/ienv0.png", "/images/iheli0.png"],
+    thirdImages: ["/images/iheli0.png", "/images/iheli1.png", "/images/itele0.png"],
+    fourthImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
     videos: ["/videos/tele.v.mp4"],
   },
   {
@@ -110,8 +116,12 @@ const rawProjects: Project[] = [
     category: "Product Viz",
     description: "A modern biometric security device with realistic materials and lighting.",
     tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting", "Realistic Rendering"],
-    images: ["/images/ivmetrix0.png", "/images/ivmetrix1.png"],
+    images: ["/images/ivmetrix0.png", "/images/ienv0.png", "/images/iheli0.png"],
+    secondImages: ["/images/ivmetrix1.png", "/images/itele0.png", "/images/iheli1.png"],
+    thirdImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele0.png", "/images/iheli0.png", "/images/itele1.png"],
     videos: ["/videos/vvmetrix0.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
   {
     id: 5,
@@ -119,8 +129,12 @@ const rawProjects: Project[] = [
     category: "Product Viz",
     description: "High-end wireless speaker with detailed material work and dynamic lighting.",
     tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting", "Realistic Rendering"],
-    images: ["/images/ispeaker0.png", "/images/ispeaker1.png"],
+    images: ["/images/ienv0.png", "/images/ispeaker1.png", "/images/iheli0.png"],
+    secondImages: ["/images/iheli0.png", "/images/ispeaker3.png", "/images/itele0.png"],
+    thirdImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele1.png", "/images/iheli0.png", "/images/itele0.png"],
     videos: ["/videos/vspeaker0.mp4"],
+    secondVideos: ["/videos/vheli0.mp4", "/videos/vchar0.mp4"],
   },
   {
     id: 6,
@@ -128,8 +142,12 @@ const rawProjects: Project[] = [
     category: "Product Viz",
     description: "Detailed 3D visualization of a premium athletic shoe with realistic materials.",
     tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting", "Realistic Rendering"],
-    images: ["/images/2.png", "/images/shoes1.png"],
+    images: ["/images/2.png", "/images/ienv0.png", "/images/iheli0.png"],
+    secondImages: ["/images/shoes1.png", "/images/itele0.png", "/images/iheli1.png"],
+    thirdImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele0.png", "/images/iheli0.png", "/images/itele1.png"],
     videos: ["/videos/shoes.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
   {
     id: 7,
@@ -137,8 +155,12 @@ const rawProjects: Project[] = [
     category: "Environment",
     description: "A vibrant fantasy game environment with stylized architecture and magical elements.",
     tags: ["Environment Design", "Game Art", "Stylized Modeling", "Texturing", "Lighting"],
-    images: ["/images/ienv0.png", "/images/game_env1.png"],
+    images: ["/images/ienv0.png", "/images/iheli0.png", "/images/itele0.png"],
+    secondImages: ["/images/game_env1.png", "/images/itele1.png", "/images/iheli1.png"],
+    thirdImages: ["/images/iheli0.png", "/images/itele0.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele1.png", "/images/iheli0.png", "/images/itele0.png"],
     videos: ["/videos/game_env.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
   {
     id: 8,
@@ -146,8 +168,12 @@ const rawProjects: Project[] = [
     category: "Environment",
     description: "A detailed cyberpunk city environment with neon lights and futuristic architecture.",
     tags: ["Environment Design", "Game Art", "Stylized Modeling", "Texturing", "Lighting"],
-    images: ["/images/cyberpunk0.png", "/images/cyberpunk1.png"],
+    images: ["/images/cyberpunk0.png", "/images/ienv0.png", "/images/iheli0.png"],
+    secondImages: ["/images/cyberpunk1.png", "/images/itele0.png", "/images/iheli1.png"],
+    thirdImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele0.png", "/images/iheli0.png", "/images/itele1.png"],
     videos: ["/videos/cyberpunk.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
   {
     id: 9,
@@ -155,8 +181,12 @@ const rawProjects: Project[] = [
     category: "Environment",
     description: "A photorealistic forest environment with detailed vegetation and atmospheric lighting.",
     tags: ["Environment Design", "Realistic Modeling", "Texturing", "Lighting", "Photorealistic"],
-    images: ["/images/forest0.png", "/images/forest1.png"],
+    images: ["/images/forest0.png", "/images/ienv0.png", "/images/iheli0.png"],
+    secondImages: ["/images/forest1.png", "/images/itele0.png", "/images/iheli1.png"],
+    thirdImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele1.png", "/images/iheli0.png", "/images/itele0.png"],
     videos: ["/videos/forest.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
   {
     id: 10,
@@ -164,8 +194,12 @@ const rawProjects: Project[] = [
     category: "Environment",
     description: "A highly detailed urban environment with realistic architecture and materials.",
     tags: ["Environment Design", "Realistic Modeling", "Texturing", "Lighting", "Photorealistic"],
-    images: ["/images/urban0.png", "/images/urban1.png"],
+    images: ["/images/urban0.png", "/images/ienv0.png", "/images/iheli0.png"],
+    secondImages: ["/images/urban1.png", "/images/itele0.png", "/images/iheli1.png"],
+    thirdImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele0.png", "/images/iheli0.png", "/images/itele1.png"],
     videos: ["/videos/urban.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
   {
     id: 11,
@@ -173,8 +207,12 @@ const rawProjects: Project[] = [
     category: "CGI Animation",
     description: "A photorealistic banner animation showcasing dynamic cloth simulation and realistic lighting effects.",
     tags: ["Cloth Simulation", "Animation", "Realistic Rendering", "Motion Graphics", "Lighting"],
-    images: ["/images/iheli1.png", "/images/iheli0.png"],
+    images: ["/images/iheli1.png", "/images/ienv0.png", "/images/iheli0.png"],
+    secondImages: ["/images/iheli0.png", "/images/itele0.png", "/images/iheli1.png"],
+    thirdImages: ["/images/itele0.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele1.png", "/images/iheli0.png", "/images/itele0.png"],
     videos: ["/videos/vheli0.mp4"],
+    secondVideos: ["/videos/tele.v.mp4"],
   },
   {
     id: 12,
@@ -182,8 +220,12 @@ const rawProjects: Project[] = [
     category: "CGI Animation",
     description: "A dynamic shoe animation featuring detailed material work, motion graphics, and cinematic camera movements.",
     tags: ["Product Animation", "Motion Graphics", "Cinematic", "Material Design", "Camera Animation"],
-    images: ["/images/cgi_shoe0.png", "/images/cgi_shoe1.png"],
+    images: ["/images/cgi_shoe0.png", "/images/ienv0.png", "/images/iheli0.png"],
+    secondImages: ["/images/cgi_shoe1.png", "/images/itele0.png", "/images/iheli1.png"],
+    thirdImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele0.png", "/images/iheli0.png", "/images/itele1.png"],
     videos: ["/videos/cgi_shoe.mp4"],
+    secondVideos: ["/videos/vheli0.mp4"],
   },
 ]
 
@@ -197,6 +239,14 @@ export function Portfolio() {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
   const [showAll, setShowAll] = useState(false)
+  const [carouselKey, setCarouselKey] = useState(0)
+
+  // Reset carousel when project changes
+  useEffect(() => {
+    if (selectedProject) {
+      setCarouselKey(prev => prev + 1)
+    }
+  }, [selectedProject])
 
   const filteredProjects =
     selectedCategory === "All" ? projects : projects.filter((project) => project.category === selectedCategory)
@@ -259,14 +309,14 @@ export function Portfolio() {
                     <Maximize2 className="w-5 h-5" />
                   </Button>
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 z-10">
-                    <h3 className="text-xl font-semibold text-white">{project.title}</h3>
-                    <p className="text-white/70">{project.category}</p>
-                    <div className="flex gap-2 mt-2">
-                      {project.tags.slice(0, 2).map((tag) => (
-                        <Badge key={tag} variant="secondary" className="bg-white/20 text-white">
-                          {tag}
-                        </Badge>
-                      ))}
+                  <h3 className="text-xl font-semibold text-white">{project.title}</h3>
+                  <p className="text-white/70">{project.category}</p>
+                  <div className="flex gap-2 mt-2">
+                    {project.tags.slice(0, 2).map((tag) => (
+                      <Badge key={tag} variant="secondary" className="bg-white/20 text-white">
+                        {tag}
+                      </Badge>
+                    ))}
                     </div>
                   </div>
                 </div>
@@ -299,21 +349,26 @@ export function Portfolio() {
             {selectedProject && (
               <div className="p-0 space-y-6">
                 {/* Media Preview */}
-                <div className="grid md:grid-cols-2 gap-4">
+                <div className="grid md:grid-cols-4 gap-2">
                   {/* First Image Carousel */}
                   {selectedProject.images && selectedProject.images.length > 0 && (
                     <div className="w-full relative">
                       <Splide
+                        key={`carousel-1-${carouselKey}`}
                         options={{
                           type: 'loop',
                           perPage: 1,
                           perMove: 1,
-                          gap: '1rem',
+                          gap: '0.5rem',
                           pagination: false,
                           arrows: true,
                           autoplay: true,
-                          interval: 3000,
+                          interval: 4000,
                           pauseOnHover: true,
+                          pauseOnFocus: true,
+                          rewind: true,
+                          waitForTransition: true,
+                          speed: 400,
                           classes: {
                             arrows: 'splide__arrows',
                             arrow: 'splide__arrow',
@@ -323,11 +378,11 @@ export function Portfolio() {
                           start: 0,
                         }}
                       >
-                        {selectedProject.images.slice(0, Math.ceil(selectedProject.images.length / 2)).map((image, i) => (
+                        {selectedProject.images.map((image, i) => (
                           <SplideSlide key={`img-${i}`}>
-                            <div className="relative group aspect-[4/3]">
+                            <div className="relative group aspect-[3/2]">
                               <img
-                                src={image || "/placeholder.svg"}
+                                src={image}
                                 alt={`Image ${i + 1}`}
                                 className="w-full h-full object-cover rounded-lg"
                               />
@@ -347,19 +402,24 @@ export function Portfolio() {
                   )}
 
                   {/* Second Image Carousel */}
-                  {selectedProject.images && selectedProject.images.length > 0 && (
+                  {selectedProject.secondImages && selectedProject.secondImages.length > 0 && (
                     <div className="w-full relative">
                       <Splide
+                        key={`carousel-2-${carouselKey}`}
                         options={{
                           type: 'loop',
                           perPage: 1,
                           perMove: 1,
-                          gap: '1rem',
+                          gap: '0.5rem',
                           pagination: false,
                           arrows: true,
                           autoplay: true,
-                          interval: 3000,
+                          interval: 4000,
                           pauseOnHover: true,
+                          pauseOnFocus: true,
+                          rewind: true,
+                          waitForTransition: true,
+                          speed: 400,
                           classes: {
                             arrows: 'splide__arrows',
                             arrow: 'splide__arrow',
@@ -369,11 +429,11 @@ export function Portfolio() {
                           start: 0,
                         }}
                       >
-                        {selectedProject.images.slice(Math.ceil(selectedProject.images.length / 2)).map((image, i) => (
+                        {selectedProject.secondImages.map((image, i) => (
                           <SplideSlide key={`img2-${i}`}>
-                            <div className="relative group aspect-[4/3]">
+                            <div className="relative group aspect-[3/2]">
                               <img
-                                src={image || "/placeholder.svg"}
+                                src={image}
                                 alt={`Image ${i + 1}`}
                                 className="w-full h-full object-cover rounded-lg"
                               />
@@ -392,19 +452,25 @@ export function Portfolio() {
                     </div>
                   )}
 
-                  {/* Video Carousel */}
-                  {selectedProject.videos && selectedProject.videos.length > 0 && (
+                  {/* Third Image Carousel */}
+                  {selectedProject.thirdImages && selectedProject.thirdImages.length > 0 && (
                     <div className="w-full relative">
                       <Splide
+                        key={`carousel-3-${carouselKey}`}
                         options={{
                           type: 'loop',
                           perPage: 1,
                           perMove: 1,
-                          gap: '1rem',
+                          gap: '0.5rem',
                           pagination: false,
                           arrows: true,
-                          autoplay: false,
+                          autoplay: true,
+                          interval: 4000,
                           pauseOnHover: true,
+                          pauseOnFocus: true,
+                          rewind: true,
+                          waitForTransition: true,
+                          speed: 400,
                           classes: {
                             arrows: 'splide__arrows',
                             arrow: 'splide__arrow',
@@ -414,26 +480,106 @@ export function Portfolio() {
                           start: 0,
                         }}
                       >
-                        {selectedProject.videos.map((video, i) => (
-                          <SplideSlide key={`vid-${i}`}>
-                            <div className="w-full aspect-video">
-                              <video 
-                                controls 
-                                className="w-full h-full object-contain rounded-lg"
-                                onPlay={(e) => {
-                                  const videos = document.querySelectorAll('video');
-                                  videos.forEach((v) => {
-                                    if (v !== e.currentTarget) v.pause();
-                                  });
-                                }}
+                        {selectedProject.thirdImages.map((image, i) => (
+                          <SplideSlide key={`img3-${i}`}>
+                            <div className="relative group aspect-[3/2]">
+                              <img
+                                src={image}
+                                alt={`Image ${i + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => setFullscreenImage(image)}
                               >
-                                <source src={video} type="video/mp4" />
-                                Your browser does not support the video tag.
-                              </video>
+                                <Maximize2 className="w-5 h-5" />
+                              </Button>
                             </div>
                           </SplideSlide>
                         ))}
                       </Splide>
+                    </div>
+                  )}
+
+                  {/* Fourth Image Carousel */}
+                  {selectedProject.fourthImages && selectedProject.fourthImages.length > 0 && (
+                    <div className="w-full relative">
+                      <Splide
+                        key={`carousel-4-${carouselKey}`}
+                        options={{
+                          type: 'loop',
+                          perPage: 1,
+                          perMove: 1,
+                          gap: '0.5rem',
+                          pagination: false,
+                          arrows: true,
+                          autoplay: true,
+                          interval: 4000,
+                          pauseOnHover: true,
+                          pauseOnFocus: true,
+                          rewind: true,
+                          waitForTransition: true,
+                          speed: 400,
+                          classes: {
+                            arrows: 'splide__arrows',
+                            arrow: 'splide__arrow',
+                            prev: 'splide__arrow--prev',
+                            next: 'splide__arrow--next',
+                          },
+                          start: 0,
+                        }}
+                      >
+                        {selectedProject.fourthImages.map((image, i) => (
+                          <SplideSlide key={`img4-${i}`}>
+                            <div className="relative group aspect-[3/2]">
+                              <img
+                                src={image}
+                                alt={`Image ${i + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={() => setFullscreenImage(image)}
+                              >
+                                <Maximize2 className="w-5 h-5" />
+                              </Button>
+                            </div>
+                          </SplideSlide>
+                        ))}
+                      </Splide>
+                    </div>
+                  )}
+
+                  {/* Video Display */}
+                  {selectedProject.videos && selectedProject.videos.length > 0 && (
+                    <div className="w-full relative">
+                      <div className="relative group aspect-[3/2] bg-black">
+                        <video 
+                          controls 
+                          autoPlay
+                          muted
+                          loop
+                          playsInline
+                          className="w-full h-full object-contain rounded-lg"
+                          preload="metadata"
+                          onPlay={(e) => {
+                            const videos = document.querySelectorAll('video');
+                            videos.forEach((v) => {
+                              if (v !== e.currentTarget) {
+                                v.pause();
+                                v.currentTime = 0;
+                              }
+                            });
+                          }}
+                        >
+                          <source src={selectedProject.videos[0]} type="video/mp4" />
+                          Your browser does not support the video tag.
+                        </video>
+                      </div>
                     </div>
                   )}
                 </div>
