@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@emailjs/nodejs": "^1.2.1",
+    "@emailjs/nodejs": "^5.0.2",
     "@eslint/js": "^8.56.0",
     "@hookform/resolvers": "^3.9.1",
     "@radix-ui/react-accordion": "^1.1.2",
