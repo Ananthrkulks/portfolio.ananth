@@ -59,11 +59,11 @@ export default function KnowMore() {
               {/* Speaker Project */}
               <article className="bg-card rounded-lg overflow-hidden shadow-lg">
                 <div className="aspect-video">
-                  <VideoPlayer 
-                    src="/videos/vspeaker0.mp4" 
+                <VideoPlayer 
+                  src="/videos/vspeaker0.mp4" 
                     className="w-full h-full"
-                    poster="/images/ispeaker0.png"
-                  />
+                  poster="/images/ispeaker0.png"
+                />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">Speaker Design Project</h3>
@@ -80,11 +80,11 @@ export default function KnowMore() {
               {/* Helicopter Project */}
               <article className="bg-card rounded-lg overflow-hidden shadow-lg">
                 <div className="aspect-video">
-                  <VideoPlayer 
-                    src="/videos/vheli0.mp4" 
+                <VideoPlayer 
+                  src="/videos/vheli0.mp4" 
                     className="w-full h-full"
-                    poster="/images/iheli0.png"
-                  />
+                  poster="/images/iheli0.png"
+                />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-2">Helicopter Animation</h3>
@@ -107,11 +107,11 @@ export default function KnowMore() {
               {/* VMetrix Project */}
               <div className="bg-card rounded-lg overflow-hidden shadow-lg">
                 <div className="aspect-video">
-                  <VideoPlayer 
-                    src="/videos/vvmetrix0.mp4" 
+                <VideoPlayer 
+                  src="/videos/vvmetrix0.mp4" 
                     className="w-full h-full"
-                    poster="/images/ivmetrix0.png"
-                  />
+                  poster="/images/ivmetrix0.png"
+                />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-4">VMetrix Project</h3>
@@ -124,11 +124,11 @@ export default function KnowMore() {
               {/* Tele Project */}
               <div className="bg-card rounded-lg overflow-hidden shadow-lg">
                 <div className="aspect-video">
-                  <VideoPlayer 
-                    src="/videos/tele.v.mp4" 
+                <VideoPlayer 
+                  src="/videos/tele.v.mp4" 
                     className="w-full h-full"
-                    poster="/images/itele0.png"
-                  />
+                  poster="/images/itele0.png"
+                />
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold mb-4">Tele Project</h3>

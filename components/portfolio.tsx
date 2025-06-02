@@ -483,7 +483,7 @@ export function Portfolio() {
                         {selectedProject.thirdImages.map((image, i) => (
                           <SplideSlide key={`img3-${i}`}>
                             <div className="relative group aspect-[3/2]">
-                              <img
+                      <img
                                 src={image}
                                 alt={`Image ${i + 1}`}
                                 className="w-full h-full object-cover rounded-lg"
@@ -536,20 +536,20 @@ export function Portfolio() {
                             <div className="relative group aspect-[3/2]">
                               <img
                                 src={image}
-                                alt={`Image ${i + 1}`}
+                        alt={`Image ${i + 1}`}
                                 className="w-full h-full object-cover rounded-lg"
-                              />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => setFullscreenImage(image)}
-                              >
-                                <Maximize2 className="w-5 h-5" />
-                              </Button>
-                            </div>
+                      />
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                        onClick={() => setFullscreenImage(image)}
+                      >
+                        <Maximize2 className="w-5 h-5" />
+                      </Button>
+                    </div>
                           </SplideSlide>
-                        ))}
+                  ))}
                       </Splide>
                     </div>
                   )}
@@ -577,8 +577,8 @@ export function Portfolio() {
                           }}
                         >
                           <source src={selectedProject.videos[0]} type="video/mp4" />
-                          Your browser does not support the video tag.
-                        </video>
+                        Your browser does not support the video tag.
+                      </video>
                       </div>
                     </div>
                   )}
