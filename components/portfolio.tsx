@@ -98,24 +98,38 @@ interface Project {
 const rawProjects: Project[] = [
   {
     id: 1,
-    title: "Character Design",
+    title: "Low-Poly Character",
     category: "Character",
-    description: "A collection of character designs showcasing different styles and personalities.",
-    tags: ["Character Design", "Digital Art", "Illustration"],
-    link: "https://www.behance.net/gallery/123456789/Character-Design-Collection",
+    description: "A simple low-poly character model created for a game project, with clean topology",
+    tags: ["Character Modeling", "Texturing", "Blender"],
+    images: ["/images/ichar.png", "/images/ichar3.png", "/images/ichar0.png", "/images/ichar1.png"],
+    secondImages: ["/images/ichar0v.png", "/images/icharv.png"],
+    thirdImages: ["/images/ichareference.png"],
+    videos: ["/videos/vchar0.mp4"],
     pdfs: [],
   },
   {
-    id: 3,
-    title: "RFID-Enabled Telephone ",
+    id: 2,
+    title: "RFID-Enabled Telephone",
     category: "Product Viz",
     description: "Dynamic product animation of a high-end consumer electronics device.",
-    tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting" , "Realistic Rendering"],
-    images: ["/images/itele0.png", "/images/8.png", "/images/ienv0.png"],
-    secondImages: ["/images/itele1.png", "/images/ienv0.png", "/images/iheli0.png"],
-    thirdImages: ["/images/iheli0.png", "/images/iheli1.png", "/images/itele0.png"],
-    fourthImages: ["/images/iheli0.png", "/images/itele1.png", "/images/ienv0.png"],
+    tags: ["Product Design", "Blender Modeling", "Texturing", "Lighting", "Realistic Rendering"],
+    images: ["/images/itele0.png", "/images/itele10.png"],
+    secondImages: ["/images/itele1v.png"],
     videos: ["/videos/tele.v.mp4"],
+  },
+  {
+    id: 3,
+    title: "Ultimate Showcase",
+    category: "Mixed Media",
+    description: "A comprehensive project showing off 3D renders, animations, and product reels.",
+    tags: ["3D", "Motion", "Product", "Mixed Media"],
+    images: ["/images/ienv0.png", "/images/iheli0.png", "/images/itele0.png"],
+    secondImages: ["/images/0.png", "/images/iheli1.png", "/images/itele1.png"],
+    thirdImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
+    fourthImages: ["/images/itele1.png", "/images/iheli1.png", "/images/itele0.png"],
+    videos: ["/video.mp4"],
+    secondVideos: ["/video.mp4"],
   },
   {
     id: 4,
@@ -234,10 +248,83 @@ const rawProjects: Project[] = [
   },
 ]
 
-// Remove duplicates by ID
-const projects: Project[] = Array.from(new Map(rawProjects.map((proj) => [proj.id, proj])).values())
+// Get unique categories and sort them
+const categories = ["All", "Character", "Product Viz", "Mixed Media", "Environment", "CGI Animation"]
 
-const categories = ["All", ...Array.from(new Set(projects.map((p) => p.category)))]
+// Remove duplicates by ID and sort by ID
+const projects: Project[] = Array.from(new Map(rawProjects.map((proj) => [proj.id, proj])).values())
+  .sort((a, b) => a.id - b.id)
+
+// Add this right after the imports
+const imageCache = new Map<string, string>()
+
+// Update the preloadImage function to be more strict
+function preloadImage(src: string, projectId: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (imageCache.has(`${projectId}-${src}`)) {
+      resolve()
+      return
+    }
+    const img = new Image()
+    img.src = src
+    img.onload = () => {
+      imageCache.set(`${projectId}-${src}`, src)
+      resolve()
+    }
+    img.onerror = () => {
+      imageCache.set(`${projectId}-${src}`, '/placeholder.svg')
+      resolve()
+    }
+  })
+}
+
+// Add these types at the top after imports
+type ProjectImage = {
+  src: string;
+  alt: string;
+  projectId: string;
+}
+
+type ProjectImages = {
+  [key: string]: ProjectImage[];
+}
+
+// Add this before the Portfolio component
+const projectImages: ProjectImages = {
+  "1": [
+    { src: "/images/ichar0.png", alt: "Character Design 1", projectId: "1" },
+    { src: "/images/ichar1.png", alt: "Character Design 2", projectId: "1" },
+    { src: "/images/ichar3.png", alt: "Character Design 3", projectId: "1" },
+    { src: "/images/ichar.png", alt: "Character Design 4", projectId: "1" },
+    { src: "/images/icharv.png", alt: "Character Design 5", projectId: "1" },
+    { src: "/images/ichar0v.png", alt: "Character Design 6", projectId: "1" },
+    { src: "/images/ichareference.png", alt: "Character Design 7", projectId: "1" }
+  ],
+  "2": [
+    { src: "/images/ienv0.png", alt: "Environment Design 1", projectId: "2" },
+    { src: "/images/ienv1.png", alt: "Environment Design 2", projectId: "2" },
+    { src: "/images/ienv3.png", alt: "Environment Design 3", projectId: "2" },
+    { src: "/images/ienv1v.png", alt: "Environment Design 4", projectId: "2" },
+    { src: "/images/ienv2v.png", alt: "Environment Design 5", projectId: "2" }
+  ],
+  "3": [
+    { src: "/images/ispeaker0.png", alt: "Speaker Design 1", projectId: "3" },
+    { src: "/images/ispeaker1.png", alt: "Speaker Design 2", projectId: "3" }
+  ],
+  "4": [
+    { src: "/images/iheli0.png", alt: "Helicopter Design 1", projectId: "4" },
+    { src: "/images/iheli1.png", alt: "Helicopter Design 2", projectId: "4" }
+  ],
+  "5": [
+    { src: "/images/ivmetrix0.png", alt: "Vmetrix Design 1", projectId: "5" },
+    { src: "/images/ivmetrix1.png", alt: "Vmetrix Design 2", projectId: "5" }
+  ],
+  "6": [
+    { src: "/images/itele0.png", alt: "Telephone Design 1", projectId: "6" },
+    { src: "/images/itele1v.png", alt: "Telephone Design 2", projectId: "6" },
+    { src: "/images/itele10.png", alt: "Telephone Design 3", projectId: "6" }
+  ]
+}
 
 export function Portfolio() {
   const [selectedCategory, setSelectedCategory] = useState("All")
@@ -247,28 +334,47 @@ export function Portfolio() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showAll, setShowAll] = useState(false)
   const [carouselKey, setCarouselKey] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
 
-  // Reset carousel when project changes
+  // Reset states when project changes
   useEffect(() => {
     if (selectedProject) {
       setCarouselKey(prev => prev + 1)
+      setCurrentImageIndex(0)
+      setIsLoading(true)
     }
   }, [selectedProject])
 
-  const filteredProjects =
-    selectedCategory === "All" ? projects : projects.filter((project) => project.category === selectedCategory)
-
-  // Calculate initial display count (2 rows * 3 columns = 6 items)
-  const initialDisplayCount = 6
-  const displayedProjects = showAll ? filteredProjects : filteredProjects.slice(0, initialDisplayCount)
+  // Handle image loading
+  const handleImageLoad = () => {
+    setIsLoading(false)
+  }
 
   // Function to open fullscreen image with carousel
   const openFullscreen = (imageSrc: string, images: string[], index: number, e: React.MouseEvent) => {
-    e.stopPropagation() // Prevent triggering the project dialog
+    e.stopPropagation()
     setFullscreenImage(imageSrc)
     setFullscreenImages(images)
     setCurrentImageIndex(index)
   }
+
+  // Function to navigate through fullscreen images with keyboard
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!fullscreenImage) return
+      
+      if (e.key === 'ArrowRight') {
+        navigateFullscreen('next')
+      } else if (e.key === 'ArrowLeft') {
+        navigateFullscreen('prev')
+      } else if (e.key === 'Escape') {
+        setFullscreenImage(null)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [fullscreenImage, currentImageIndex, fullscreenImages])
 
   // Function to navigate through fullscreen images
   const navigateFullscreen = (direction: 'prev' | 'next') => {
@@ -283,6 +389,47 @@ export function Portfolio() {
     
     setCurrentImageIndex(newIndex)
     setFullscreenImage(fullscreenImages[newIndex])
+  }
+
+  // Update the preload effect
+  useEffect(() => {
+    const preloadAllImages = async () => {
+      const imagePromises = Object.values(projectImages).flatMap(images =>
+        images.map(img => {
+          return new Promise<void>((resolve) => {
+            const image = new Image()
+            image.src = img.src
+            image.onload = () => {
+              imageCache.set(`${img.projectId}-${img.src}`, img.src)
+              resolve()
+            }
+            image.onerror = () => {
+              imageCache.set(`${img.projectId}-${img.src}`, '/placeholder.svg')
+              resolve()
+            }
+          })
+        })
+      )
+      await Promise.all(imagePromises)
+    }
+    preloadAllImages()
+  }, [])
+
+  const filteredProjects =
+    selectedCategory === "All" ? projects : projects.filter((project) => project.category === selectedCategory)
+
+  // Calculate initial display count (2 rows * 3 columns = 6 items)
+  const initialDisplayCount = 6
+  const displayedProjects = showAll ? filteredProjects : filteredProjects.slice(0, initialDisplayCount)
+
+  // Helper function to get project images with fallback
+  const getProjectImages = (project: Project) => {
+    const images = project.images || []
+    return images.map((src, index) => ({
+      src,
+      alt: `${project.title} - Image ${index + 1}`,
+      projectId: project.id.toString()
+    }))
   }
 
   return (
@@ -310,43 +457,59 @@ export function Portfolio() {
 
         {/* Projects Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {displayedProjects.map((project) => (
-            <Card
-              key={project.id}
-              className="group relative overflow-hidden rounded-lg cursor-pointer border-0 p-0 h-[300px]"
-              onClick={() => setSelectedProject(project)}
-            >
-              <CardContent className="p-0 h-full">
-                <div className="relative h-full">
-                  <img
-                    src={project.images?.[0] || "/placeholder.svg"}
-                    alt={project.title}
-                    className="w-full h-full object-cover object-[center_40%] transition duration-300 group-hover:scale-110"
-                  />
-                  {/* Fullscreen button */}
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    onClick={(e) => openFullscreen(project.images?.[0] || "", project.images || [], 0, e)}
-                  >
-                    <Maximize2 className="w-5 h-5" />
-                  </Button>
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 z-10">
-                  <h3 className="text-xl font-semibold text-white">{project.title}</h3>
-                  <p className="text-white/70">{project.category}</p>
-                  <div className="flex gap-2 mt-2">
-                    {project.tags.slice(0, 2).map((tag) => (
-                      <Badge key={tag} variant="secondary" className="bg-white/20 text-white">
-                        {tag}
-                      </Badge>
-                    ))}
+          {displayedProjects.map((project) => {
+            const projectImages = getProjectImages(project)
+            const mainImage = projectImages[0]?.src || "/placeholder.svg"
+            
+            return (
+              <Card
+                key={project.id}
+                className="group relative overflow-hidden rounded-lg cursor-pointer border-0 p-0 h-[300px]"
+                onClick={() => setSelectedProject(project)}
+              >
+                <CardContent className="p-0 h-full">
+                  <div className="relative h-full">
+                    {isLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-gray-100">
+                        <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
+                      </div>
+                    )}
+                    <img
+                      src={mainImage}
+                      alt={project.title}
+                      className={`w-full h-full object-cover object-[center_40%] transition duration-300 group-hover:scale-110 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                      onLoad={handleImageLoad}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement
+                        target.src = '/placeholder.svg'
+                        setIsLoading(false)
+                      }}
+                    />
+                    {/* Fullscreen button */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                      onClick={(e) => openFullscreen(mainImage, projectImages.map(img => img.src), 0, e)}
+                    >
+                      <Maximize2 className="w-5 h-5" />
+                    </Button>
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 z-10">
+                      <h3 className="text-xl font-semibold text-white">{project.title}</h3>
+                      <p className="text-white/70">{project.category}</p>
+                      <div className="flex gap-2 mt-2">
+                        {project.tags.slice(0, 2).map((tag) => (
+                          <Badge key={tag} variant="secondary" className="bg-white/20 text-white">
+                            {tag}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            )
+          })}
         </div>
 
         {/* Show More Button */}
@@ -375,18 +538,18 @@ export function Portfolio() {
                 {/* Media Preview */}
                 <div className="grid md:grid-cols-4 gap-2">
                   {/* First Image Carousel */}
-                  {selectedProject.images && selectedProject.images.length > 0 && (
+                  {getProjectImages(selectedProject).map((image, i) => (
                     <div className="w-full relative">
                       <Splide
                         key={`carousel-1-${carouselKey}`}
                         options={{
-                          type: selectedProject.images.length > 1 ? 'loop' : 'slide',
+                          type: getProjectImages(selectedProject).length > 1 ? 'loop' : 'slide',
                           perPage: 1,
                           perMove: 1,
                           gap: '0.5rem',
                           pagination: false,
-                          arrows: selectedProject.images.length > 1,
-                          autoplay: selectedProject.images.length > 1,
+                          arrows: getProjectImages(selectedProject).length > 1,
+                          autoplay: getProjectImages(selectedProject).length > 1,
                           interval: 4000,
                           pauseOnHover: true,
                           pauseOnFocus: true,
@@ -402,181 +565,30 @@ export function Portfolio() {
                           start: 0,
                         }}
                       >
-                        {selectedProject.images.map((image, i) => (
-                          <SplideSlide key={`img-${i}`}>
-                            <div className="relative group aspect-[3/2]">
-                              <img
-                                src={image}
-                                alt={`Image ${i + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={(e) => openFullscreen(image, selectedProject.images || [], i, e)}
-                              >
-                                <Maximize2 className="w-5 h-5" />
-                              </Button>
-                            </div>
-                          </SplideSlide>
-                        ))}
+                        <SplideSlide key={`${selectedProject.id}-${i}`}>
+                          <div className="relative group aspect-[3/2]">
+                            <img
+                              src={image.src}
+                              alt={image.alt}
+                              className="w-full h-full object-cover rounded-lg"
+                              onError={(e) => {
+                                const target = e.target as HTMLImageElement
+                                target.src = '/placeholder.svg'
+                              }}
+                            />
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                              onClick={(e) => openFullscreen(image.src, getProjectImages(selectedProject).map(img => img.src), i, e)}
+                            >
+                              <Maximize2 className="w-5 h-5" />
+                            </Button>
+                          </div>
+                        </SplideSlide>
                       </Splide>
                     </div>
-                  )}
-
-                  {/* Second Image Carousel */}
-                  {selectedProject.secondImages && selectedProject.secondImages.length > 0 && (
-                    <div className="w-full relative">
-                      <Splide
-                        key={`carousel-2-${carouselKey}`}
-                        options={{
-                          type: selectedProject.secondImages.length > 1 ? 'loop' : 'slide',
-                          perPage: 1,
-                          perMove: 1,
-                          gap: '0.5rem',
-                          pagination: false,
-                          arrows: selectedProject.secondImages.length > 1,
-                          autoplay: selectedProject.secondImages.length > 1,
-                          interval: 4000,
-                          pauseOnHover: true,
-                          pauseOnFocus: true,
-                          rewind: true,
-                          waitForTransition: true,
-                          speed: 400,
-                          classes: {
-                            arrows: 'splide__arrows',
-                            arrow: 'splide__arrow',
-                            prev: 'splide__arrow--prev',
-                            next: 'splide__arrow--next',
-                          },
-                          start: 0,
-                        }}
-                      >
-                        {selectedProject.secondImages.map((image, i) => (
-                          <SplideSlide key={`img2-${i}`}>
-                            <div className="relative group aspect-[3/2]">
-                              <img
-                                src={image}
-                                alt={`Image ${i + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={(e) => openFullscreen(image, selectedProject.secondImages || [], i, e)}
-                              >
-                                <Maximize2 className="w-5 h-5" />
-                              </Button>
-                            </div>
-                          </SplideSlide>
-                        ))}
-                      </Splide>
-                    </div>
-                  )}
-
-                  {/* Third Image Carousel */}
-                  {selectedProject.thirdImages && selectedProject.thirdImages.length > 0 && (
-                    <div className="w-full relative">
-                      <Splide
-                        key={`carousel-3-${carouselKey}`}
-                        options={{
-                          type: selectedProject.thirdImages.length > 1 ? 'loop' : 'slide',
-                          perPage: 1,
-                          perMove: 1,
-                          gap: '0.5rem',
-                          pagination: false,
-                          arrows: selectedProject.thirdImages.length > 1,
-                          autoplay: selectedProject.thirdImages.length > 1,
-                          interval: 4000,
-                          pauseOnHover: true,
-                          pauseOnFocus: true,
-                          rewind: true,
-                          waitForTransition: true,
-                          speed: 400,
-                          classes: {
-                            arrows: 'splide__arrows',
-                            arrow: 'splide__arrow',
-                            prev: 'splide__arrow--prev',
-                            next: 'splide__arrow--next',
-                          },
-                          start: 0,
-                        }}
-                      >
-                        {selectedProject.thirdImages.map((image, i) => (
-                          <SplideSlide key={`img3-${i}`}>
-                            <div className="relative group aspect-[3/2]">
-                              <img
-                                src={image}
-                                alt={`Image ${i + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={(e) => openFullscreen(image, selectedProject.thirdImages || [], i, e)}
-                              >
-                                <Maximize2 className="w-5 h-5" />
-                              </Button>
-                            </div>
-                          </SplideSlide>
-                        ))}
-                      </Splide>
-                    </div>
-                  )}
-
-                  {/* Fourth Image Carousel */}
-                  {selectedProject.fourthImages && selectedProject.fourthImages.length > 0 && (
-                    <div className="w-full relative">
-                      <Splide
-                        key={`carousel-4-${carouselKey}`}
-                        options={{
-                          type: selectedProject.fourthImages.length > 1 ? 'loop' : 'slide',
-                          perPage: 1,
-                          perMove: 1,
-                          gap: '0.5rem',
-                          pagination: false,
-                          arrows: selectedProject.fourthImages.length > 1,
-                          autoplay: selectedProject.fourthImages.length > 1,
-                          interval: 4000,
-                          pauseOnHover: true,
-                          pauseOnFocus: true,
-                          rewind: true,
-                          waitForTransition: true,
-                          speed: 400,
-                          classes: {
-                            arrows: 'splide__arrows',
-                            arrow: 'splide__arrow',
-                            prev: 'splide__arrow--prev',
-                            next: 'splide__arrow--next',
-                          },
-                          start: 0,
-                        }}
-                      >
-                        {selectedProject.fourthImages.map((image, i) => (
-                          <SplideSlide key={`img4-${i}`}>
-                            <div className="relative group aspect-[3/2]">
-                              <img
-                                src={image}
-                                alt={`Image ${i + 1}`}
-                                className="w-full h-full object-cover rounded-lg"
-                              />
-                              <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={(e) => openFullscreen(image, selectedProject.fourthImages || [], i, e)}
-                              >
-                                <Maximize2 className="w-5 h-5" />
-                              </Button>
-                            </div>
-                          </SplideSlide>
-                        ))}
-                      </Splide>
-                    </div>
-                  )}
+                  ))}
 
                   {/* Video Display */}
                   {selectedProject.videos && selectedProject.videos.length > 0 && (
