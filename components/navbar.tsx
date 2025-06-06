@@ -35,7 +35,7 @@ export function Navbar() {
       <div className="container mx-auto px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="text-xl font-bold">
-            Ananth R Kulkarni
+            Portfolio
           </Link>
 
           {/* Desktop Navigation */}

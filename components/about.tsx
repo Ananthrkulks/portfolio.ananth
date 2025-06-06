@@ -1,12 +1,17 @@
-import { Github, Linkedin } from "lucide-react"
+'use client'
+
+import { Github, Linkedin, FileText } from "lucide-react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { FileText } from "lucide-react"
 import { ResumeContent } from "./resume-content"
+import { DownloadButton } from "./download-button"
 import Link from "next/link"
+import { useState } from "react"
 
 export function About() {
+  const [isResumeOpen, setIsResumeOpen] = useState(false)
+
   return (
     <section className="py-20" id="about">
       <div className="container mx-auto px-6">
@@ -75,23 +80,29 @@ export function About() {
                 </a>
               </Button>
 
-              <Dialog>
+              <Dialog open={isResumeOpen} onOpenChange={setIsResumeOpen}>
                 <DialogTrigger asChild>
-                  <Button className="gap-2">
+                  <Button className="gap-2 hover:bg-primary/10">
                     <FileText className="w-4 h-4" />
                     Resume
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-                  <DialogHeader>
+                <DialogContent className="w-[95vw] sm:w-[90vw] md:w-[80vw] lg:max-w-4xl max-h-[90vh] overflow-hidden p-4 sm:p-6 fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%]">
+                  <DialogHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sticky top-0 bg-background z-50 pb-4 border-b">
                     <DialogTitle>Ananth R Kulkarni - Resume</DialogTitle>
+                    <DownloadButton />
                   </DialogHeader>
-                  <ResumeContent />
+                  <div className="relative z-0 mt-4 h-full overflow-auto">
+                    <ResumeContent />
+                  </div>
                 </DialogContent>
               </Dialog>
 
-              <Button asChild>
-                <Link href="/know-more" className="gap-2">
+              <Button 
+                asChild 
+                className="gap-2 transition-all duration-300 hover:scale-105 hover:shadow-lg hover:shadow-primary/20 active:scale-95"
+              >
+                <Link href="/know-more">
                   Know More
                 </Link>
               </Button>

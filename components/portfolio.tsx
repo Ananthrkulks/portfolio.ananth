@@ -54,6 +54,28 @@ const splideStyles = `
   .splide__arrow svg path {
     fill: white;
   }
+
+  /* PDF Viewer Styles */
+  .pdf-viewer {
+    width: 100%;
+    height: 100%;
+    min-height: 300px;
+    background: #f5f5f5;
+    border-radius: 0.5rem;
+    overflow: hidden;
+  }
+
+  .pdf-viewer iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+
+  @media (max-width: 768px) {
+    .pdf-viewer {
+      min-height: 400px;
+    }
+  }
 `;
 
 interface Project {
@@ -68,35 +90,20 @@ interface Project {
   thirdImages?: string[]
   fourthImages?: string[]
   secondVideos?: string[]
+  pdfs?: string[]
+  link?: string
 }
 
 // Raw projects with duplicates
 const rawProjects: Project[] = [
   {
     id: 1,
-    title: "Sci-Fi Character Design",
-    category: "Character Art",
-    description: "A futuristic character design created for a AAA game project.",
-    tags: ["Character Modeling", "Texturing", "Rigging"],
-    images: ["/images/ienv0.png", "/images/iheli0.png", "/images/itele0.png"],
-    secondImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
-    thirdImages: ["/images/itele0.png", "/images/iheli0.png", "/images/ienv0.png"],
-    fourthImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
-    videos: ["/videos/tele.v.mp4"],
-    secondVideos: ["/videos/vheli0.mp4"],
-  },
-  {
-    id: 2,
-    title: "Ultimate Showcase",
-    category: "Mixed Media",
-    description: "A comprehensive project showing off 3D renders, animations, and product reels.",
-    tags: ["3D", "Motion", "Product", "Mixed Media"],
-    images: ["/images/ienv0.png", "/images/iheli0.png", "/images/itele0.png"],
-    secondImages: ["/images/0.png", "/images/iheli1.png", "/images/itele1.png"],
-    thirdImages: ["/images/iheli1.png", "/images/itele1.png", "/images/ienv0.png"],
-    fourthImages: ["/images/itele1.png", "/images/iheli1.png", "/images/itele0.png"],
-    videos: ["/video.mp4"],
-    secondVideos: ["/video.mp4"],
+    title: "Character Design",
+    category: "Character",
+    description: "A collection of character designs showcasing different styles and personalities.",
+    tags: ["Character Design", "Digital Art", "Illustration"],
+    link: "https://www.behance.net/gallery/123456789/Character-Design-Collection",
+    pdfs: [],
   },
   {
     id: 3,
@@ -155,10 +162,8 @@ const rawProjects: Project[] = [
     category: "Environment",
     description: "A vibrant fantasy game environment with stylized architecture and magical elements.",
     tags: ["Environment Design", "Game Art", "Stylized Modeling", "Texturing", "Lighting"],
-    images: ["/images/ienv0.png", "/images/iheli0.png", "/images/itele0.png"],
-    secondImages: ["/images/game_env1.png", "/images/itele1.png", "/images/iheli1.png"],
-    thirdImages: ["/images/iheli0.png", "/images/itele0.png", "/images/ienv0.png"],
-    fourthImages: ["/images/itele1.png", "/images/iheli0.png", "/images/itele0.png"],
+    images: ["/images/ienv3.png","/images/ienv0.png", "/images/ienv1.png"],
+    secondImages: ["/images/ienv1v.png", "/images/ienv2v.png"],
     videos: ["/videos/game_env.mp4"],
     secondVideos: ["/videos/vheli0.mp4"],
   },
@@ -238,6 +243,8 @@ export function Portfolio() {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedProject, setSelectedProject] = useState<Project | null>(null)
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null)
+  const [fullscreenImages, setFullscreenImages] = useState<string[]>([])
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
   const [showAll, setShowAll] = useState(false)
   const [carouselKey, setCarouselKey] = useState(0)
 
@@ -255,10 +262,27 @@ export function Portfolio() {
   const initialDisplayCount = 6
   const displayedProjects = showAll ? filteredProjects : filteredProjects.slice(0, initialDisplayCount)
 
-  // Function to open fullscreen image
-  const openFullscreen = (imageSrc: string, e: React.MouseEvent) => {
+  // Function to open fullscreen image with carousel
+  const openFullscreen = (imageSrc: string, images: string[], index: number, e: React.MouseEvent) => {
     e.stopPropagation() // Prevent triggering the project dialog
     setFullscreenImage(imageSrc)
+    setFullscreenImages(images)
+    setCurrentImageIndex(index)
+  }
+
+  // Function to navigate through fullscreen images
+  const navigateFullscreen = (direction: 'prev' | 'next') => {
+    if (fullscreenImages.length === 0) return
+    
+    let newIndex = currentImageIndex
+    if (direction === 'next') {
+      newIndex = (currentImageIndex + 1) % fullscreenImages.length
+    } else {
+      newIndex = (currentImageIndex - 1 + fullscreenImages.length) % fullscreenImages.length
+    }
+    
+    setCurrentImageIndex(newIndex)
+    setFullscreenImage(fullscreenImages[newIndex])
   }
 
   return (
@@ -304,7 +328,7 @@ export function Portfolio() {
                     variant="ghost"
                     size="icon"
                     className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity z-10"
-                    onClick={(e) => openFullscreen(project.images?.[0] || "", e)}
+                    onClick={(e) => openFullscreen(project.images?.[0] || "", project.images || [], 0, e)}
                   >
                     <Maximize2 className="w-5 h-5" />
                   </Button>
@@ -356,13 +380,13 @@ export function Portfolio() {
                       <Splide
                         key={`carousel-1-${carouselKey}`}
                         options={{
-                          type: 'loop',
+                          type: selectedProject.images.length > 1 ? 'loop' : 'slide',
                           perPage: 1,
                           perMove: 1,
                           gap: '0.5rem',
                           pagination: false,
-                          arrows: true,
-                          autoplay: true,
+                          arrows: selectedProject.images.length > 1,
+                          autoplay: selectedProject.images.length > 1,
                           interval: 4000,
                           pauseOnHover: true,
                           pauseOnFocus: true,
@@ -390,7 +414,7 @@ export function Portfolio() {
                                 variant="ghost"
                                 size="icon"
                                 className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => setFullscreenImage(image)}
+                                onClick={(e) => openFullscreen(image, selectedProject.images || [], i, e)}
                               >
                                 <Maximize2 className="w-5 h-5" />
                               </Button>
@@ -407,13 +431,13 @@ export function Portfolio() {
                       <Splide
                         key={`carousel-2-${carouselKey}`}
                         options={{
-                          type: 'loop',
+                          type: selectedProject.secondImages.length > 1 ? 'loop' : 'slide',
                           perPage: 1,
                           perMove: 1,
                           gap: '0.5rem',
                           pagination: false,
-                          arrows: true,
-                          autoplay: true,
+                          arrows: selectedProject.secondImages.length > 1,
+                          autoplay: selectedProject.secondImages.length > 1,
                           interval: 4000,
                           pauseOnHover: true,
                           pauseOnFocus: true,
@@ -441,7 +465,7 @@ export function Portfolio() {
                                 variant="ghost"
                                 size="icon"
                                 className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => setFullscreenImage(image)}
+                                onClick={(e) => openFullscreen(image, selectedProject.secondImages || [], i, e)}
                               >
                                 <Maximize2 className="w-5 h-5" />
                               </Button>
@@ -458,13 +482,13 @@ export function Portfolio() {
                       <Splide
                         key={`carousel-3-${carouselKey}`}
                         options={{
-                          type: 'loop',
+                          type: selectedProject.thirdImages.length > 1 ? 'loop' : 'slide',
                           perPage: 1,
                           perMove: 1,
                           gap: '0.5rem',
                           pagination: false,
-                          arrows: true,
-                          autoplay: true,
+                          arrows: selectedProject.thirdImages.length > 1,
+                          autoplay: selectedProject.thirdImages.length > 1,
                           interval: 4000,
                           pauseOnHover: true,
                           pauseOnFocus: true,
@@ -483,7 +507,7 @@ export function Portfolio() {
                         {selectedProject.thirdImages.map((image, i) => (
                           <SplideSlide key={`img3-${i}`}>
                             <div className="relative group aspect-[3/2]">
-                      <img
+                              <img
                                 src={image}
                                 alt={`Image ${i + 1}`}
                                 className="w-full h-full object-cover rounded-lg"
@@ -492,7 +516,7 @@ export function Portfolio() {
                                 variant="ghost"
                                 size="icon"
                                 className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                                onClick={() => setFullscreenImage(image)}
+                                onClick={(e) => openFullscreen(image, selectedProject.thirdImages || [], i, e)}
                               >
                                 <Maximize2 className="w-5 h-5" />
                               </Button>
@@ -509,13 +533,13 @@ export function Portfolio() {
                       <Splide
                         key={`carousel-4-${carouselKey}`}
                         options={{
-                          type: 'loop',
+                          type: selectedProject.fourthImages.length > 1 ? 'loop' : 'slide',
                           perPage: 1,
                           perMove: 1,
                           gap: '0.5rem',
                           pagination: false,
-                          arrows: true,
-                          autoplay: true,
+                          arrows: selectedProject.fourthImages.length > 1,
+                          autoplay: selectedProject.fourthImages.length > 1,
                           interval: 4000,
                           pauseOnHover: true,
                           pauseOnFocus: true,
@@ -536,20 +560,20 @@ export function Portfolio() {
                             <div className="relative group aspect-[3/2]">
                               <img
                                 src={image}
-                        alt={`Image ${i + 1}`}
+                                alt={`Image ${i + 1}`}
                                 className="w-full h-full object-cover rounded-lg"
-                      />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
-                        onClick={() => setFullscreenImage(image)}
-                      >
-                        <Maximize2 className="w-5 h-5" />
-                      </Button>
-                    </div>
+                              />
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                                onClick={(e) => openFullscreen(image, selectedProject.fourthImages || [], i, e)}
+                              >
+                                <Maximize2 className="w-5 h-5" />
+                              </Button>
+                            </div>
                           </SplideSlide>
-                  ))}
+                        ))}
                       </Splide>
                     </div>
                   )}
@@ -582,6 +606,32 @@ export function Portfolio() {
                       </div>
                     </div>
                   )}
+
+                  {/* PDF Display */}
+                  {selectedProject.pdfs && selectedProject.pdfs.length > 0 && (
+                    <div className="w-full relative">
+                      <div className="relative group aspect-[3/2] bg-black">
+                        <div className="pdf-viewer">
+                          <iframe
+                            src={`${selectedProject.pdfs[0]}#toolbar=0&navpanes=0`}
+                            className="w-full h-full object-contain rounded-lg"
+                            style={{ border: 'none' }}
+                          />
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="absolute top-2 right-2 bg-black/50 hover:bg-black/70 text-white opacity-0 group-hover:opacity-100 transition-opacity"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            window.open(selectedProject.pdfs?.[0], '_blank');
+                          }}
+                        >
+                          <ExternalLink className="w-5 h-5" />
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
 
                 {/* Description */}
@@ -610,6 +660,9 @@ export function Portfolio() {
         {/* Fullscreen Image Modal */}
         <Dialog open={!!fullscreenImage} onOpenChange={(open) => !open && setFullscreenImage(null)}>
           <DialogContent className="max-w-[95vw] max-h-[95vh] p-0 overflow-hidden bg-black/90">
+            <DialogHeader className="sr-only">
+              <DialogTitle>Fullscreen Image View</DialogTitle>
+            </DialogHeader>
             <div className="relative w-full h-full flex items-center justify-center">
               <img
                 src={fullscreenImage || ""}
@@ -617,6 +670,28 @@ export function Portfolio() {
                 className="max-w-full max-h-[90vh] object-contain"
               />
               <DialogClose className="absolute right-4 top-4 text-white hover:text-gray-300" />
+
+              {/* Navigation Arrows */}
+              {fullscreenImages.length > 1 && (
+                <>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                    onClick={() => navigateFullscreen('prev')}
+                  >
+                    <ChevronLeft className="h-6 w-6" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white"
+                    onClick={() => navigateFullscreen('next')}
+                  >
+                    <ChevronRight className="h-6 w-6" />
+                  </Button>
+                </>
+              )}
 
               {/* Optional: Add external link button */}
               {fullscreenImage && (

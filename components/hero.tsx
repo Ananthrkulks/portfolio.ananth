@@ -1,12 +1,25 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
-import { ChevronDown } from "lucide-react"
+import { ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export function Hero() {
   const [currentWorkIndex, setCurrentWorkIndex] = useState(0)
-  const videoRefs = useRef<(HTMLVideoElement | null)[]>([null, null])
+  const [isAtBottom, setIsAtBottom] = useState(false)
+  const videoRefs = useRef<(HTMLVideoElement | null)[]>([])
+
+  // Check scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight
+      const documentHeight = document.documentElement.scrollHeight
+      setIsAtBottom(scrollPosition >= documentHeight - 100) // 100px threshold
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   // Simplified portfolio works with direct paths
   const portfolioWorks = [
@@ -153,7 +166,9 @@ export function Hero() {
               }}
             >
               <video
-                ref={(el) => (videoRefs.current[i] = el)}
+                ref={(el) => {
+                  videoRefs.current[i] = el
+                }}
                 className="w-full h-full object-cover"
                 style={{
                   filter: "blur(1.5px) brightness(0.55) contrast(1.1)",
@@ -218,15 +233,23 @@ export function Hero() {
           size="icon"
           className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50 transition-all duration-300 group"
           onClick={() => {
-            const servicesSection = document.getElementById("services")
-            if (servicesSection) {
-              servicesSection.scrollIntoView({ behavior: "smooth" })
+            if (isAtBottom) {
+              window.scrollTo({ top: 0, behavior: 'smooth' })
+            } else {
+              const servicesSection = document.getElementById("services")
+              if (servicesSection) {
+                servicesSection.scrollIntoView({ behavior: "smooth" })
+              }
             }
           }}
         >
-          <ChevronDown className="w-6 h-6 text-white group-hover:animate-pulse" />
-          <span className="sr-only">Scroll Down</span>
-          <span className="absolute -inset-0.5 rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-ping-slow"></span>
+          {isAtBottom ? (
+            <ChevronUp className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300" />
+          ) : (
+            <ChevronDown className="w-6 h-6 text-white group-hover:scale-110 transition-transform duration-300" />
+          )}
+          <span className="sr-only">{isAtBottom ? "Scroll to Top" : "Scroll Down"}</span>
+          <span className="absolute -inset-0.5 rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
         </Button>
       </div>
     </section>

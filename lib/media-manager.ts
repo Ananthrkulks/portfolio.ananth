@@ -36,7 +36,7 @@ export const mediaStructure = {
     portfolio: "/videos/", // For hero and portfolio videos
   },
   documents: {
-    resume: "/documents/resume.pdf", // For resume
+    resume: "/resume.pdf", // For resume
   },
 }
 
